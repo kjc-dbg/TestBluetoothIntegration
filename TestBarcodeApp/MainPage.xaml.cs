@@ -21,8 +21,27 @@ namespace TestBarcodeApp
             InitializeBluetooth();
         }
 
-        private void InitializeBluetooth()
+
+
+        public async Task<PermissionStatus> RequestBluetoothScanPermission()
         {
+            PermissionStatus status = await Permissions.CheckStatusAsync<Permissions.Bluetooth>();
+
+            if (status != PermissionStatus.Granted)
+            {
+                status = await Permissions.RequestAsync<Permissions.Bluetooth>();
+            }
+
+            return status;
+        }
+
+        private async void InitializeBluetooth()
+        {
+
+
+            await RequestBluetoothScanPermission();
+
+
 #if ANDROID
             _bluetoothService = new BluetoothService();
             _bluetoothService.ConnectionStatusChanged += OnConnectionStatusChanged;
