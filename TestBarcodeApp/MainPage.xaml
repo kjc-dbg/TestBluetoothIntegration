@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="TestBarcodeApp.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Maui.Controls;assembly=ZXing.Net.Maui.Controls">
+
+    <VerticalStackLayout Padding="20" Spacing="20">
+
+        <Label
+            FontAttributes="Bold"
+            FontSize="24"
+            HorizontalOptions="Center"
+            Text="Bluetooth Barcode Scanner" />
+
+        <Frame Padding="10" BackgroundColor="LightGray">
+            <Label
+                x:Name="StatusLabel"
+                HorizontalOptions="Center"
+                Text="Disconnected" />
+        </Frame>
+
+        <Picker
+            x:Name="DevicePicker"
+            Title="Select Bluetooth Device"
+            ItemDisplayBinding="{Binding Name}" />
+
+        <Button
+            x:Name="ConnectButton"
+            BackgroundColor="Blue"
+            Clicked="OnConnectClicked"
+            Text="Connect"
+            TextColor="White" />
+
+        <Entry
+            x:Name="BarcodeEntry"
+            FontSize="18"
+            Placeholder="Enter barcode or scan" />
+
+        <Button
+            x:Name="ScanButton"
+            BackgroundColor="Green"
+            Clicked="OnScanClicked"
+            IsEnabled="False"
+            Text="Scan Barcode"
+            TextColor="White" />
+
+        <Button
+            x:Name="SendButton"
+            BackgroundColor="Orange"
+            Clicked="OnSendClicked"
+            IsEnabled="False"
+            Text="Send Barcode"
+            TextColor="White" />
+
+    </VerticalStackLayout>
+
+</ContentPage>

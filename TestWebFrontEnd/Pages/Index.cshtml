@@ -1,0 +1,75 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div>
+
+
+<div id="barcode-container">
+    <h3>Recent Barcodes:</h3>
+    <ul id="barcode-list" class="list-group">
+        @foreach (var barcode in Model.Barcodes)
+        {
+            <li class="list-group-item">@barcode</li>
+        }
+    </ul>
+</div>
+
+<div class="alert alert-info mt-3">
+    <span id="connection-status">Connecting...</span>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/barcodeHub")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        connection.on("ReceiveBarcode", function (barcode) {
+            const li = document.createElement("li");
+            li.className = "list-group-item";
+            li.textContent = barcode;
+
+            const list = document.getElementById("barcode-list");
+            list.insertBefore(li, list.firstChild);
+
+            // Keep only last 10 items
+            while (list.children.length > 10) {
+                list.removeChild(list.lastChild);
+            }
+
+            // Highlight new item
+            li.style.backgroundColor = "#d4edda";
+            setTimeout(() => {
+                li.style.backgroundColor = "";
+                li.style.transition = "background-color 0.5s";
+            }, 100);
+        });
+
+        async function start() {
+            try {
+                await connection.start();
+                document.getElementById("connection-status").textContent = "Connected to real-time updates";
+            } catch (err) {
+                console.error(err);
+                document.getElementById("connection-status").textContent = "Failed to connect. Retrying...";
+                setTimeout(start, 5000);
+            }
+        }
+
+        connection.onclose(async () => {
+            document.getElementById("connection-status").textContent = "Disconnected. Reconnecting...";
+            await start();
+        });
+
+        start();
+    </script>
+}
